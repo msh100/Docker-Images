@@ -1,0 +1,16 @@
+server {
+    listen 80;
+    server_name nginx;
+    root   /app;
+    index index.php index.html index.htm;
+        
+    access_log  /var/log/nginx/access.log;
+    error_log  /var/log/nginx/error.log;
+ 
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_pass unix:/var/run/php5-fpm.sock;
+        fastcgi_index index.php;
+        include /etc/nginx/fastcgi_params;
+    }
+}
