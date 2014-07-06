@@ -13,6 +13,6 @@ To use, run the Docker container with your CloudFlare API credentials found on y
                -e 'CF_API=a1b2c3d4e5' \
                msh100/cloudflare-dyndns
 
-To run in the background, add the -D switch to `docker run`.
+To run in the background, add the -d switch to `docker run`.
 
   [1]: https://www.cloudflare.com/my-account
