@@ -12,6 +12,8 @@ RUN apt-get -y install tinyproxy
 
 RUN mkdir -m 777 /var/run/tinyproxy/
 
+RUN sed -i 's/nobody/root/g' /etc/tinyproxy.conf
+
 ADD start.sh /
 RUN chmod +x /start.sh
 
