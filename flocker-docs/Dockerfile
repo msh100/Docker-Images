@@ -19,8 +19,7 @@ RUN cd /flocker/ && tox -e sphinx
 
 # Alter Nginx configuration 
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
-RUN rm -rf /usr/share/nginx/html
-RUN ln -s /flocker/docs/_build/html /usr/share/nginx/html
+ADD site /etc/nginx/sites-enabled/default
 
 EXPOSE 80
 CMD ["nginx"]
