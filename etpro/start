@@ -1,0 +1,36 @@
+#!/bin/php
+<?php
+// Maps download/Config generation
+// Marcus Hughes <hello@msh100.uk>
+
+$maps = explode(':', getenv('MAPS'));
+
+if (!isset($_ENV['REDIRECTURL'])) {
+    $_ENV['REDIRECTURL'] = 'http://www.gamestv.org/download/repository/et/';
+}
+
+foreach ($maps as $map) {
+    shell_exec('wget -P etmain/ ' . $_ENV['REDIRECTURL'] . '/etmain/' . $map . '.pk3');
+}
+
+$configlocation = 'etpro/server.cfg';
+$config = file_get_contents($configlocation);
+
+if (!isset($_ENV['STARTMAP'])) {
+    $_ENV['STARTMAP'] = 'radar';
+}
+
+if (!isset($_ENV['HOSTNAME'])) {
+    $_ENV['HOSTNAME'] = 'ETHost';
+}
+
+foreach ($_ENV as $key => $env) {
+    $config = str_replace('%' . $key . '%', $env, $config);
+}
+
+$config = preg_replace('(%[A-Z]*?%)', '', $config);
+file_put_contents($configlocation, $config);
+
+exec ('./ettv.x86 +set dedicated 2 +set vm_game 0 +set sv_autoUpdate 0' .
+      ' +set net_ip 0.0.0.0 +set net_port 27960 +set sv_maxclients 32' .
+      ' +set fs_game etpro +set sv_punkbuster 0 +exec server.cfg');
