@@ -29,7 +29,7 @@ foreach ($_ENV as $key => $env) {
 }
 
 $config = preg_replace('(%[A-Z]*?%)', '', $config);
-$config = $config . "\n\nset ip_max_clients 15\n\n";
+$config = $config . "\n\nset ip_max_clients 0\n\n";
 file_put_contents($configlocation, $config);
 
 exec ('./ettv.x86 +set dedicated 2 +set vm_game 0 +set sv_autoUpdate 0' .
