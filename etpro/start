@@ -10,7 +10,7 @@ if (!isset($_ENV['REDIRECTURL'])) {
 }
 
 foreach ($maps as $map) {
-    shell_exec('wget -P etmain/ ' . $_ENV['REDIRECTURL'] . '/etmain/' . $map . '.pk3');
+    shell_exec('wget -O etmain/' . $map . '.pk3 ' . $_ENV['REDIRECTURL'] . '/etmain/' . $map . '.pk3');
 }
 
 $configlocation = 'etpro/server.cfg';
