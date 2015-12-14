@@ -16,4 +16,6 @@ RUN tar -xvf et.tar
 RUN rm -rf et.tar
 ADD start /home/game/
 
+EXPOSE 27960/UDP
+
 CMD php start
