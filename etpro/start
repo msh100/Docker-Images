@@ -24,6 +24,10 @@ if (!isset($_ENV['HOSTNAME'])) {
     $_ENV['HOSTNAME'] = 'ETHost';
 }
 
+if (!isset($_ENV['MAP_PORT'])) {
+    $_ENV['MAP_PORT'] = 27960;
+}
+
 foreach ($_ENV as $key => $env) {
     $config = str_replace('%' . $key . '%', $env, $config);
 }
@@ -33,5 +37,6 @@ $config = $config . "\n\nset ip_max_clients 0\n\n";
 file_put_contents($configlocation, $config);
 
 exec ('./ettv.x86 +set dedicated 2 +set vm_game 0 +set sv_autoUpdate 0' .
-      ' +set net_ip 0.0.0.0 +set net_port 27960 +set sv_maxclients 32' .
-      ' +set fs_game etpro +set sv_punkbuster 0 +exec server.cfg');
+      ' +set net_ip 0.0.0.0 +set net_port ' . $_ENV['MAP_PORT'] .
+      ' +set sv_maxclients 32 +set fs_game etpro +set sv_punkbuster 0' .
+      ' +exec server.cfg');
