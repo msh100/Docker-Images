@@ -33,3 +33,4 @@ HOSTNAME             | Server hostname.               | Docker hostname.
 STARTMAP             | Map server starts on.          | "radar".
 REDIRECTURL          | URL of HTTP downloads          | http://www.gamestv.org/download/repository/et/
 MAP_PORT             | Container port (internal)      | 27960
+NOQUERY              | Disable status queries         | Disabled, set to `true` to enable.
