@@ -16,6 +16,8 @@ RUN tar -xvf et.tar
 RUN rm -rf et.tar
 ADD start /home/game/
 
+RUN wget http://msh100.uk/files/libnoquery.so
+
 EXPOSE 27960/UDP
 
 CMD php start
