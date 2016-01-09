@@ -1,46 +1,42 @@
-#!/bin/php
-<?php
-// Maps download/Config generation
-// Marcus Hughes <hello@msh100.uk>
+#!/bin/bash
 
-$maps = explode(':', getenv('MAPS'));
+# Define default variable values
+REDIRECTURL="${REDIRECTURL:-http://www.gamestv.org/download/repository/et/}"
+STARTMAP="${STARTMAP:-radar}"
+MAP_PORT="${MAP_PORT:-27960}"
+IP_MAX_CLIENTS="${IP_MAX_CLIENTS:-3}"
 
-if (!isset($_ENV['REDIRECTURL'])) {
-    $_ENV['REDIRECTURL'] = 'http://www.gamestv.org/download/repository/et/';
-}
+CONFIG_PATH="/home/game/etpro/server.cfg"
 
-foreach ($maps as $map) {
-    shell_exec('wget -O etmain/' . $map . '.pk3 ' . $_ENV['REDIRECTURL'] . '/etmain/' . $map . '.pk3');
-}
 
-$configlocation = 'etpro/server.cfg';
-$config = file_get_contents($configlocation);
+# Find and replace all variables wrapped with % with their value
+for env in `compgen -v`; do
+    # Ensure string doesn't contain split delimiter
+    if [[ "${!env}" != *"|"* ]] && [[ "${env}" != "IFS" ]]; then
+        sed -i "s|%${env}%|${!env}|g" ${CONFIG_PATH}
+    fi
+done
 
-if (!isset($_ENV['STARTMAP'])) {
-    $_ENV['STARTMAP'] = 'radar';
-}
 
-if (!isset($_ENV['HOSTNAME'])) {
-    $_ENV['HOSTNAME'] = 'ETHost';
-}
+# If the MAPS variable is defined loop through the downloads
+if [ -n "$MAPS" ]; then
+    IFS=":" # Split on ':'
+    for map in $MAPS; do
+        # wget each map
+        wget -P etmain "${REDIRECTURL}/etmain/${map}.pk3"
+    done
+fi
 
-if (!isset($_ENV['MAP_PORT'])) {
-    $_ENV['MAP_PORT'] = 27960;
-}
 
-if ($_ENV['NOQUERY'] == 'true') {
-    $prepend = 'LD_PRELOAD="/home/game/libnoquery.so" ';
-}
+# Replace un-substituted variables with nothing
+sed -i 's/%[A-Z]*%//g' ${CONFIG_PATH}
 
-foreach ($_ENV as $key => $env) {
-    $config = str_replace('%' . $key . '%', $env, $config);
-}
 
-$config = preg_replace('(%[A-Z]*?%)', '', $config);
-$config = $config . "\n\nset ip_max_clients 0\n\n";
-file_put_contents($configlocation, $config);
+# Enable noquery if necessary
+if [[ "${NOQUERY}" == "true" ]]; then
+    export LD_PRELOAD="/home/game/libnoquery.so"
+fi
 
-exec ($prepend . './ettv.x86 +set dedicated 2 +set vm_game 0 +set sv_autoUpdate 0' .
-      ' +set net_ip 0.0.0.0 +set net_port ' . $_ENV['MAP_PORT'] .
-      ' +set sv_maxclients 32 +set fs_game etpro +set sv_punkbuster 0' .
-      ' +exec server.cfg');
+
+# Execute Enemy Territory
+exec ./ettv.x86 +set dedicated 2 +set vm_game 0 +set sv_autoUpdate 0 +set net_ip 0.0.0.0 +set net_port ${MAP_PORT} +set sv_maxclients 32 +set fs_game etpro +set sv_punkbuster 0 +exec server.cfg

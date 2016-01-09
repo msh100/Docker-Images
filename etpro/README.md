@@ -34,3 +34,4 @@ STARTMAP             | Map server starts on.          | "radar".
 REDIRECTURL          | URL of HTTP downloads          | http://www.gamestv.org/download/repository/et/
 MAP_PORT             | Container port (internal)      | 27960
 NOQUERY              | Disable status queries         | Disabled, set to `true` to enable.
+IP_MAX_CLIENTS       | The maximum clients per IP     | Infinite.
