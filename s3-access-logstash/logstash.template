@@ -1,0 +1,21 @@
+input{
+    s3 {
+        bucket => "S3_BUCKET"
+        region => "S3_REGION"
+        prefix => "S3_LOGPREFIX"
+        type => "s3"
+    }
+}
+output{
+    elasticsearch {
+        hosts => "ES_HOST"
+        ssl => true
+        flush_size => 2500
+    }
+}
+filter {
+    grok {
+        patterns_dir => "/config/patterns"
+        pattern => "%{S3ACCESSLOG}"
+    }
+}

@@ -1,0 +1,20 @@
+IAMUSERID %{NUMBER:iam_user_id}
+IAMUSERNAME [a-zA-Z0-9._-]+
+IAMUSER arn:aws:iam::%{IAMUSERID}:user/%{IAMUSERNAME:iam_user_name}
+
+S3TYPE [a-zA-z_]+
+S3OP [a-zA-z]+
+S3SOAPOPERATION (?:SOAP\.%{S3OP})
+S3RESTOPERATION  (?:REST\.%{S3OP}(\.%{S3TYPE})?)
+S3WEBSITEOPERATION  (?:WEBSITE\.%{S3OP}\.%{S3TYPE})
+S3OPERATION (?:%{S3SOAPOPERATION}|%{S3RESTOPERATION}|%{S3WEBSITEOPERATION})
+
+S3ERRORCODE [a-zA-z]+
+S3KEY [a-zA-Z0-9\/_\.\-%]+
+
+S3ACCESSLOG1 %{BASE16NUM:s3_owner} (-|%{HOSTNAME:s3_bucket}) \[%{HTTPDATE:timestamp}\] %{IP:s3_remote_ip} (-|%{IAMUSER:s3_requester}|%{BASE16NUM:s3_requester})
+S3ACCESSLOG2 %{BASE16NUM:s3_request_id} %{S3OPERATION:s3_operation} (-|%{S3KEY:s3_key}) (-|\"%{DATA:s3_request}\")
+S3ACCESSLOG3 %{NUMBER:s3_status} (-|%{S3ERRORCODE:s3_error_code}) (-|%{NUMBER:s3_bytes_sent:int}) (-|%{NUMBER:s3_object_size:int})
+S3ACCESSLOG4 (-|%{NUMBER:s3_request_time}) (-|%{NUMBER:s3_turnaround_time}) (-|\"(-|%{DATA:s3_referrer})\");? (-|\"%{DATA:s3_user_agent}\") (-|%{BASE16NUM:s3_version_id})
+S3ACCESSLOG %{S3ACCESSLOG1} %{S3ACCESSLOG2} %{S3ACCESSLOG3} %{S3ACCESSLOG4}
+
