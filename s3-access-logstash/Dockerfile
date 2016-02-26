@@ -8,4 +8,4 @@ RUN mkdir patterns/ && \
       mv s3 patterns/ && \
       chmod +x init.sh
 
-
+CMD ["/config/init.sh"]
