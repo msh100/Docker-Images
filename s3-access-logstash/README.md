@@ -24,7 +24,7 @@ The following configuration options must be defined:
         -e "S3_LOGPREFIX=archive.clusterhq.com/s3/" \
         -e "ES_HOST=elasticsearch-afewoifhwefwi.us-east-1.es.amazonaws.com:443" \
         msh100/s3-access-logstash
-````
+```
 
 
 ## Notes
